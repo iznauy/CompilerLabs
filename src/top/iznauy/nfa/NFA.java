@@ -1,5 +1,7 @@
 package top.iznauy.nfa;
 
+import top.iznauy.utils.REs;
+
 import java.util.*;
 
 /**
@@ -59,4 +61,17 @@ public class NFA {
         return new NFA(startState, endStates);
     }
 
+    public static void main(String[] args) {
+
+
+    }
+
+
+    @Override
+    public String toString() {
+        return "NFA{" +
+                "startState=" + startState +
+                ", endStates=" + endStates +
+                '}';
+    }
 }

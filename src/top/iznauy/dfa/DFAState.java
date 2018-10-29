@@ -74,4 +74,12 @@ public class DFAState {
     public int hashCode() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "DFAState{" +
+                "id=" + id +
+                ", outEdges=" + outEdges +
+                "}";
+    }
 }

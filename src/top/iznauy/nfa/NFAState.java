@@ -63,4 +63,12 @@ public class NFAState {
     public int hashCode() {
         return id;
     }
+
+    @Override
+    public String toString() {
+        return "NFAState{" +
+                "id=" + id +
+                ", outEdges=" + outEdges +
+                '}';
+    }
 }

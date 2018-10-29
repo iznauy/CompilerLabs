@@ -43,4 +43,13 @@ public class NFAEdge {
     public void setToState(NFAState toState) {
         this.toState = toState;
     }
+
+    @Override
+    public String toString() {
+        return "NFAEdge{" +
+                "tag=" + tag +
+                ", fromState=" + fromState.getId() +
+                ", toState=" + toState.getId() +
+                '}';
+    }
 }
