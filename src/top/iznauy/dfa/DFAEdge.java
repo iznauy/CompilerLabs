@@ -6,7 +6,7 @@ package top.iznauy.dfa;
  *
  * @author iznauy
  */
-public class DFAEdge {
+class DFAEdge {
 
     private char tag;
 

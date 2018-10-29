@@ -10,7 +10,7 @@ import java.util.*;
  *
  * @author iznauy
  */
-public class DFAState {
+class DFAState {
 
     private int id;
 

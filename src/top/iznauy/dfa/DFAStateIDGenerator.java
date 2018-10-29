@@ -6,7 +6,7 @@ package top.iznauy.dfa;
  *
  * @author iznauy
  */
-public class DFAStateIDGenerator {
+class DFAStateIDGenerator {
 
     private static int nextID = 0;
 

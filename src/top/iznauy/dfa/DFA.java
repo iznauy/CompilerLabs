@@ -150,33 +150,33 @@ public class DFA {
         }
     }
 
-    // debug
-    public static void main(String[] args) {
-        NFAState state1 = new NFAState();
-        NFAState state2 = new NFAState();
-        NFAEdge edge1 = new NFAEdge('a', state1, state2);
-        state1.addOutEdge(edge1);
-        NFA nfa1 = new NFA(state1);
-        nfa1.addEndState(state2, REs.OK_1);
-
-        NFAState state3 = new NFAState();
-        NFAState state4 = new NFAState();
-        NFAEdge edge2 = new NFAEdge('b', state3, state4);
-        state3.addOutEdge(edge2);
-        NFA nfa2 = new NFA(state3);
-        nfa2.addEndState(state4, REs.OK_2);
-
-        List<NFA> nfas = new ArrayList<>();
-        nfas.add(nfa1);
-        nfas.add(nfa2);
-
-        NFA mergedNFA = NFA.merge(nfas);
-
-        DFA dfa = DFAConverter.fromNFA(mergedNFA);
-
-        System.out.println(dfa);
-
-    }
+//    // debug
+//    public static void main(String[] args) {
+//        NFAState state1 = new NFAState();
+//        NFAState state2 = new NFAState();
+//        NFAEdge edge1 = new NFAEdge('a', state1, state2);
+//        state1.addOutEdge(edge1);
+//        NFA nfa1 = new NFA(state1);
+//        nfa1.addEndState(state2, REs.OK_1);
+//
+//        NFAState state3 = new NFAState();
+//        NFAState state4 = new NFAState();
+//        NFAEdge edge2 = new NFAEdge('b', state3, state4);
+//        state3.addOutEdge(edge2);
+//        NFA nfa2 = new NFA(state3);
+//        nfa2.addEndState(state4, REs.OK_2);
+//
+//        List<NFA> nfas = new ArrayList<>();
+//        nfas.add(nfa1);
+//        nfas.add(nfa2);
+//
+//        NFA mergedNFA = NFA.merge(nfas);
+//
+//        DFA dfa = DFAConverter.fromNFA(mergedNFA);
+//
+//        System.out.println(dfa);
+//
+//    }
 
     @Override
     public String toString() {
@@ -185,4 +185,5 @@ public class DFA {
                 ", \nendStates=" + endStates +
                 '}';
     }
+
 }
