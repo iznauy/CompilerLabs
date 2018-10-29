@@ -23,11 +23,15 @@ public class DFARecognizer {
 
     private char[] content;
 
+    private String _preProcessContent(String content) {
+        return content;
+    }
+
     public DFARecognizer(DFA dfa, String content) {
         this.dfa = dfa;
         beforeEndState = new StringBuffer();
         afterEndState = new StringBuffer();
-        this.content = content.toCharArray();
+        this.content = _preProcessContent(content).toCharArray();
     }
 
     public List<Token> recognize() {
@@ -44,7 +48,7 @@ public class DFARecognizer {
         }
 
         while (true) {
-            if (pointer > content.length)
+            if (pointer >= content.length)
                 break;
             char currentChar = content[pointer];
             pointer++;
@@ -56,6 +60,7 @@ public class DFARecognizer {
                     Token token = new Token(endType, beforeEndState.toString());
                     tokens.add(token);
                     pointer -= afterEndState.length();
+                    pointer--;
                     beforeEndState.delete(0, beforeEndState.length());  // 识别出了一个新token，很开心
                     afterEndState.delete(0, afterEndState.length());
                     currentState = dfa.getStartState(); // 重置dfa

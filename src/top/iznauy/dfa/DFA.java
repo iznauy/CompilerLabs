@@ -4,8 +4,10 @@ import top.iznauy.nfa.NFA;
 import top.iznauy.nfa.NFAEdge;
 import top.iznauy.nfa.NFAState;
 import top.iznauy.utils.REs;
+import top.iznauy.utils.Token;
 
 import java.util.*;
+import java.util.stream.StreamSupport;
 
 /**
  * Created on 2018/10/28.
@@ -45,6 +47,13 @@ public class DFA {
         this.endStates = endStates;
     }
 
+    public static class DFAOptimizer {
+
+        public static DFA optimize(DFA dfa) {
+            return dfa;
+        }
+
+    }
 
     public static class DFAConverter {
 
@@ -151,32 +160,36 @@ public class DFA {
     }
 
 //    // debug
-//    public static void main(String[] args) {
-//        NFAState state1 = new NFAState();
-//        NFAState state2 = new NFAState();
-//        NFAEdge edge1 = new NFAEdge('a', state1, state2);
-//        state1.addOutEdge(edge1);
-//        NFA nfa1 = new NFA(state1);
-//        nfa1.addEndState(state2, REs.OK_1);
-//
-//        NFAState state3 = new NFAState();
-//        NFAState state4 = new NFAState();
-//        NFAEdge edge2 = new NFAEdge('b', state3, state4);
-//        state3.addOutEdge(edge2);
-//        NFA nfa2 = new NFA(state3);
-//        nfa2.addEndState(state4, REs.OK_2);
-//
-//        List<NFA> nfas = new ArrayList<>();
-//        nfas.add(nfa1);
-//        nfas.add(nfa2);
-//
-//        NFA mergedNFA = NFA.merge(nfas);
-//
-//        DFA dfa = DFAConverter.fromNFA(mergedNFA);
-//
-//        System.out.println(dfa);
-//
-//    }
+    public static void main(String[] args) {
+        NFAState state1 = new NFAState();
+        NFAState state2 = new NFAState();
+        NFAEdge edge1 = new NFAEdge('a', state1, state2);
+        state1.addOutEdge(edge1);
+        NFA nfa1 = new NFA(state1);
+        nfa1.addEndState(state2, REs.OK_1);
+
+        NFAState state3 = new NFAState();
+        NFAState state4 = new NFAState();
+        NFAEdge edge2 = new NFAEdge('b', state3, state4);
+        state3.addOutEdge(edge2);
+        NFA nfa2 = new NFA(state3);
+        nfa2.addEndState(state4, REs.OK_2);
+
+        List<NFA> nfas = new ArrayList<>();
+        nfas.add(nfa1);
+        nfas.add(nfa2);
+
+        NFA mergedNFA = NFA.merge(nfas);
+
+        DFA dfa = DFAConverter.fromNFA(mergedNFA);
+
+        String content = "abbbbababab";
+        DFARecognizer recognizer = new DFARecognizer(dfa, content);
+        List<Token> result = recognizer.recognize();
+        for (Token token: result) {
+            System.out.println(token);
+        }
+    }
 
     @Override
     public String toString() {

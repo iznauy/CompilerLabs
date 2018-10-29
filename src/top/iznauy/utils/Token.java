@@ -32,4 +32,12 @@ public class Token {
     public void setCode(String code) {
         this.code = code;
     }
+
+    @Override
+    public String toString() {
+        return "Token{" +
+                "type='" + type + '\'' +
+                ", code='" + code + '\'' +
+                '}';
+    }
 }

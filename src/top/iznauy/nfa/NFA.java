@@ -60,11 +60,10 @@ public class NFA {
         }
         return new NFA(startState, endStates);
     }
-//
-//    public static void main(String[] args) {
-//
-//
-//    }
+
+    public static NFA fromRE() {
+        return null;
+    }
 
 
     @Override

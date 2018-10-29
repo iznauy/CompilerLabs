@@ -1,0 +1,13 @@
+digit [0-9]
+letter [A-Za-z]
+%%
+Space (\r|\n| |\t)*
+String ".*"
+Delimiter ;|\{|\}|\(|\)|\[|\]|"|,
+Operator +|-|\*|/|%|~|!|\+\+|--|<<|>>|>>>|<|>|<=|>=|==|!=|&|^|\||&&|\|\||?|:|=|\+=|-=|\*=|/=|%=|&=|^=|\|=|<<=|>>=|>>>=|\.
+JavaDoc /\*\*( |\t)*(\r|\n)(\*|.)*\*/
+Comment (/\*(\*|.)*\*/)|(//.*(\r|\n))
+Number {digit}+(\.{digit}*)?(L|d|f)?
+Hex 0x[0-9A-Fa-f]+
+Identifier ({letter}|_)({letter}|{digit}|_)*
+Keyword abstract|continue|for|new|switch|assert|default|goto|package|synchronized|boolean|do|if|private|this|break|double|implements|protected|throw|byte|else|import|public|throws|case|enum|instanceof|return|transient|catch|extends|int|short|try|char|final|interface|static|void|class|finally|long|strictfp|volatile|const|float|native|super|while
