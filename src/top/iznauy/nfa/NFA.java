@@ -49,6 +49,7 @@ public class NFA {
 
         NFAState startState = new NFAState();
         Map<NFAState, String> endStates = new HashMap<>();
+
         for (NFA nfa: nfaList) {
             NFAState toState = nfa.getStartState();
             NFAEdge edge = new NFAEdge(null, startState, toState);
