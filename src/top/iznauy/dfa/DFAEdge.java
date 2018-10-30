@@ -24,23 +24,11 @@ class DFAEdge {
         return tag;
     }
 
-    public void setTag(char tag) {
-        this.tag = tag;
-    }
-
     public DFAState getFromState() {
         return fromState;
     }
 
-    public void setFromState(DFAState fromState) {
-        this.fromState = fromState;
-    }
-
     public DFAState getEndState() {
         return endState;
-    }
-
-    public void setEndState(DFAState endState) {
-        this.endState = endState;
     }
 }

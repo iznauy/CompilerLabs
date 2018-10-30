@@ -15,8 +15,4 @@ public class NFAStateIDGenerator {
         return nextID;
     }
 
-    public static void init() {
-        nextID = 0;
-    }
-
 }

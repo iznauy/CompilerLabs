@@ -62,12 +62,4 @@ public class TemplateLoader {
 
     }
 
-    public static void main(String[] args) {
-        String filePath = "/Users/iznauy/CompilerLabs/java.iz";
-        Map<String, String> results = loadLexicalItems(filePath);
-        for (Map.Entry<String, String> result: results.entrySet()) {
-            System.out.println(result);
-        }
-    }
-
 }

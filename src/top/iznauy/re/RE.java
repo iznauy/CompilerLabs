@@ -114,12 +114,4 @@ public class RE {
         return resultList;
     }
 
-    public static void main(String[] args) {
-        String re = ".*";
-        List<RENode> reNodes = fromString(re);
-        for (RENode node: reNodes) {
-            System.out.print(node);
-        }
-    }
-
 }

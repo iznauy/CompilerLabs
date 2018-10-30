@@ -23,15 +23,11 @@ public class DFARecognizer {
 
     private char[] content;
 
-    private String _preProcessContent(String content) {
-        return content;
-    }
-
     public DFARecognizer(DFA dfa, String content) {
         this.dfa = dfa;
         beforeEndState = new StringBuffer();
         afterEndState = new StringBuffer();
-        this.content = _preProcessContent(content).toCharArray();
+        this.content = content.toCharArray();
     }
 
     public List<Token> recognize() {
@@ -107,10 +103,6 @@ public class DFARecognizer {
             }
         }
         return tokens;
-    }
-
-    public void setDfa(DFA dfa) {
-        this.dfa = dfa;
     }
 
 }

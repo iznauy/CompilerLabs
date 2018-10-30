@@ -7,7 +7,6 @@ import top.iznauy.nfa.NFA;
 import top.iznauy.nfa.NFAStateIDGenerator;
 import top.iznauy.re.RE;
 import top.iznauy.re.RENode;
-import top.iznauy.utils.REs;
 import top.iznauy.utils.TemplateLoader;
 import top.iznauy.utils.Token;
 
@@ -18,7 +17,7 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
-        String filePath = "/Users/iznauy/CompilerLabs/java2.iz";
+        String filePath = "/Users/iznauy/CompilerLabs/java.czj";
         Map<String, String> res = TemplateLoader.loadLexicalItems(filePath);
         List<NFA> nfaList = new ArrayList<>();
         for (Map.Entry<String, String> re: res.entrySet()) {
@@ -45,30 +44,6 @@ public class Main {
                 "}";
     }
 
-    public static void main1(String[] args) {
-
-        String re = "(a|b)*a(a|b)c";
-        String re2 = "e.*f";
-        List<RENode> reNodes = RE.fromString(re);
-        List<RENode> reNodes1 = RE.fromString(re2);
-        String content = "aabaaace1231414faaaac";
-        System.out.println();
-        NFA nfa = NFA.fromRE(reNodes, REs.OK_1);
-        NFA nfa1 = NFA.fromRE(reNodes1, REs.OK_2);
-        List<NFA> nfas = new ArrayList<>();
-        nfas.add(nfa1);
-        nfas.add(nfa);
-        nfa = NFA.merge(nfas);
-        DFA dfa = DFA.DFAConverter.fromNFA(nfa);
-        DFARecognizer recognizer = new DFARecognizer(dfa, content);
-        List<Token> tokens = recognizer.recognize();
-        for (Token token: tokens) {
-            System.out.println(token);
-        }
-        System.out.println(NFAStateIDGenerator.getId());
-        System.out.println(DFAStateIDGenerator.getId());
-    }
-
     static String getString2() {
         return "\n" +
                 "package retonfa;\n" +
@@ -79,7 +54,7 @@ public class Main {
                 "\n" +
                 "public class ReToNfa {\n" +
                 "\n" +
-                "    public static void main(String[] args) {\n" +
+                "    public static void main(String[] args) { // test comment \n" +
                 "        System.out.println(\"2333\\\\\"\");\n" +
                 "        Scanner s = new Scanner(System.in);\n" +
                 "        String str = s.nextLine();\n" +

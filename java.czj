@@ -1,6 +1,7 @@
 digit [0-9]
 letter [A-Za-z]
 no_quotation ([ -!#-~]|(\\"))
+no_new_line ([ -~]|\r)
 %%
 Space (\r|\n| |\t)+
 Char '.'
@@ -8,7 +9,7 @@ String ("{no_quotation}*")
 Delimiter ;|\{|\}|\(|\)|\[|\]|,
 Operator \+|-|\*|/|%|~|!|(\+\+)|(--)|(<<)|(>>)|(>>>)|(<)|(>)|(<=)|(>=)|(==)|(!=)|(&)|(^)|\||(&&)|(\|\|)|\?|:|=|(\+=)|(-=)|(\*=)|(/=)|(%=)|(&=)|(^=)|(\\|=)|(<<=)|(>>=)|(>>>=)|\.
 Identifier ({letter}|_)({letter}|{digit}|_)*
-Comment (/\*(\*|.)*\*/)|(//.*(\r|\n))
+Comment (//{no_new_line}*\n)
 Number {digit}+(\.{digit}*)?(L|d|f)?
 Hex 0x[0-9A-Fa-f]+
 Keyword (abstract)|(continue)|(for)|(new)|(switch)|(assert)|(default)|(goto)|(package)|(synchronized)|(boolean)|(do)|(if)|(private)|(this)|(break)|(double)|(implements)|(protected)|(throw)|(byte)|(else)|(import)|(public)|(throws)|(case)|(enum)|(instanceof)|(return)|(transient)|(catch)|(extends)|(int)|(short)|(try)|(char)|(final)|(interface)|(static)|(void)|(class)|(finally)|(long)|(strictfp)|(volatile)|(const)|(float)|(native)|(super)|(while)|(true)|(false)

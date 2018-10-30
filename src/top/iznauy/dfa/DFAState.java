@@ -23,12 +23,6 @@ class DFAState {
         outEdges = new HashMap<>();
         this.nfaStates = nfaStates;
     }
-
-    public DFAState(int id, Map<Character, DFAEdge> outEdges) {
-        this.id = id;
-        this.outEdges = outEdges;
-    }
-
     public int getId() {
         return id;
     }

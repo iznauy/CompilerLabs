@@ -20,22 +20,8 @@ public class NFAState {
         outEdges = new ArrayList<>();
     }
 
-    public NFAState(int id) {
-        this.id = id;
-        outEdges = new ArrayList<>();
-    }
-
-    public NFAState(int id, List<NFAEdge> outEdges) {
-        this.id = id;
-        this.outEdges = outEdges;
-    }
-
     public int getId() {
         return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public List<NFAEdge> getOutEdges() {
