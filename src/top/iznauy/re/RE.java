@@ -14,6 +14,7 @@ public class RE {
     public static List<RENode> fromString(String re) {
         List<RENode> resultList = new LinkedList<>();
 
+        resultList.add(new RENode(RENode.Type.Operator, '('));
         boolean escape = false;
         for (int i = 0; i < re.length(); i++) {
             char ch = re.charAt(i);
@@ -109,6 +110,7 @@ public class RE {
             }
 
         }
+        resultList.add(new RENode(RENode.Type.Operator, ')'));
         return resultList;
     }
 
