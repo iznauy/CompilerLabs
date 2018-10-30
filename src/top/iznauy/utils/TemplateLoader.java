@@ -4,7 +4,6 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -40,7 +39,7 @@ public class TemplateLoader {
                     throw new RuntimeException();
                 name = nameAndRE[0];
                 re = nameAndRE[1].trim();
-                for (Map.Entry<String, String> entry: constantMap.entrySet()) { // 不断进行全文替换
+                for (Map.Entry<String, String> entry : constantMap.entrySet()) { // 不断进行全文替换
                     String marco = "{" + entry.getKey() + "}";
                     while (re.contains(marco))
                         re = re.replace(marco, "(" + entry.getValue() + ")");

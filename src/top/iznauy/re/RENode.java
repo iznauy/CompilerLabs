@@ -26,16 +26,16 @@ public final class RENode {
         return ch;
     }
 
-    public enum Type {
-        Character, Operator
-    }
-
     @Override
     public String toString() {
         if (type == Type.Character)
             return ch + "";
         else
             return "\\" + ch;
+    }
+
+    public enum Type {
+        Character, Operator
     }
 
 }

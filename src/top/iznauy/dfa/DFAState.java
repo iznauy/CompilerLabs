@@ -2,7 +2,9 @@ package top.iznauy.dfa;
 
 import top.iznauy.nfa.NFAState;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * Created on 2018/10/28.
@@ -33,15 +35,16 @@ class DFAState {
         this.id = id;
     }
 
-    public void setOutEdges(Map<Character, DFAEdge> outEdges) {
-        this.outEdges = outEdges;
-    }
     public void addOutEdge(DFAEdge edge) {
         this.outEdges.put(edge.getTag(), edge);
     }
 
     public Map<Character, DFAEdge> getOutEdges() {
         return outEdges;
+    }
+
+    public void setOutEdges(Map<Character, DFAEdge> outEdges) {
+        this.outEdges = outEdges;
     }
 
     public DFAEdge getOutEdge(Character tag) {

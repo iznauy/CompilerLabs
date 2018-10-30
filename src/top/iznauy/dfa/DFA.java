@@ -28,12 +28,84 @@ public class DFA {
         this.endStates = endStates;
     }
 
+    public static void export(DFA dfa, String targetLocation) {
+        targetLocation += "Template.java";
+
+        String sourceCode = Template.getTemplate();
+        sourceCode = sourceCode.replace("<BeginState>", dfa.startState.getId() + "");
+
+        StringBuilder methodNameListBuilder = new StringBuilder();
+
+        // 向代码中添加结束状态
+        Map<DFAState, String> endStates = dfa.getEndStates();
+        StringBuilder endStateBuilder = new StringBuilder();
+        endStateBuilder.append("public static void initEndState() {\n");
+        Map<String, List<Integer>> nameToIndex = new HashMap<>();
+
+        for (String s : endStates.values())
+            nameToIndex.computeIfAbsent(s, k -> new ArrayList<>());
+        for (Map.Entry<DFAState, String> endState : endStates.entrySet())
+            nameToIndex.get(endState.getValue()).add(endState.getKey().getId());
+        for (Map.Entry<String, List<Integer>> item : nameToIndex.entrySet()) {
+            String name = item.getKey();
+            List<Integer> states = item.getValue();
+            endStateBuilder.append("addEndState(\"").append(name).append("\"");
+            for (Integer integer : states)
+                endStateBuilder.append(", ").append(integer);
+            endStateBuilder.append(");\n");
+        }
+        endStateBuilder.append("};\n");
+        methodNameListBuilder.append("initEndState();\n");
+        sourceCode = sourceCode.replace("<initEndState>", endStateBuilder.toString());
+
+        int nodeCount = 0;
+        int methodCount = 0;
+        // 向代码中添加转换关系
+        StringBuilder builder = new StringBuilder();
+        StringBuilder graphBuilder = new StringBuilder();
+        for (Map.Entry<Integer, DFAState> stateEntry : states.entrySet()) {
+            nodeCount++;
+            int id = stateEntry.getKey();
+            DFAState state = stateEntry.getValue();
+            graphBuilder.append("addDFA(").append(id);
+            for (DFAEdge edge : state.getOutEdges().values()) {
+                graphBuilder.append(", ").append((int) edge.getTag());
+                graphBuilder.append(", ").append(edge.getEndState().getId());
+            }
+            graphBuilder.append(");\n");
+            if (nodeCount % 10 == 0) { // 一个新的方法将要诞生
+                methodCount++;
+                builder.append("public static void init").append(methodCount).append(" () {\n")
+                        .append(graphBuilder.toString()).append("};\n");
+                methodNameListBuilder.append("init").append(methodCount).append("();\n");
+                graphBuilder.delete(0, graphBuilder.length());
+            }
+        }
+        sourceCode = sourceCode.replace("<initGraph>", builder.toString());
+
+        sourceCode = sourceCode.replace("<init>", methodNameListBuilder.toString());
+
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(targetLocation))) {
+            writer.write(sourceCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     public DFAState getStartState() {
         return startState;
     }
 
     public Map<DFAState, String> getEndStates() {
         return endStates;
+    }
+
+    @Override
+    public String toString() {
+        return "DFA{\n" +
+                "startState=" + startState +
+                ", \nendStates=" + endStates +
+                '}';
     }
 
     public static class DFAConverter {
@@ -48,7 +120,7 @@ public class DFA {
             Set<NFAState> resultSet = new HashSet<>();
             // init stack
             Stack<NFAState> stateStack = new Stack<>();
-            for (NFAState state: states)
+            for (NFAState state : states)
                 stateStack.push(state);
 
             // find Closure
@@ -57,7 +129,7 @@ public class DFA {
                 if (resultSet.contains(currentState)) // 如果不在集合中，说明已经充分探索，就把它丢掉好了，不过性能上存在着优化的空间
                     continue; // 可以保证每个节点只被拓展一次，但无法保证只被入栈一次
                 resultSet.add(currentState);
-                for (NFAEdge edge: currentState.getOutEdges()) {
+                for (NFAEdge edge : currentState.getOutEdges()) {
                     if (edge.getTag() == null)
                         stateStack.push(edge.getToState());
                 }
@@ -67,8 +139,8 @@ public class DFA {
 
         private static Set<Character> getPossibleNextTag(Collection<? extends NFAState> states) {
             Set<Character> possibleChars = new HashSet<>();
-            for (NFAState state: states) {
-                for (NFAEdge edge: state.getOutEdges()) {
+            for (NFAState state : states) {
+                for (NFAEdge edge : state.getOutEdges()) {
                     if (edge.getTag() == null)
                         continue;
                     possibleChars.add(edge.getTag());
@@ -79,9 +151,9 @@ public class DFA {
 
         private static Set<NFAState> findNextStateSet(Collection<? extends NFAState> states, char tag) {
             Set<NFAState> resultSet = new HashSet<>();
-            for (NFAState state: states) {
-                for (NFAEdge edge: state.getOutEdges()) {
-                    if (edge.getTag()!= null && edge.getTag() == tag) {
+            for (NFAState state : states) {
+                for (NFAEdge edge : state.getOutEdges()) {
+                    if (edge.getTag() != null && edge.getTag() == tag) {
                         resultSet.add(edge.getToState());
                     }
                 }
@@ -102,7 +174,7 @@ public class DFA {
             while (dFAQueue.size() > 0) {
                 DFAState state = dFAQueue.poll();
                 Set<Character> possibleNextTags = getPossibleNextTag(state.getNfaStates());
-                for (char tag: possibleNextTags) {
+                for (char tag : possibleNextTags) {
                     Set<NFAState> epsilonClosure = findEpsilonClosure(findNextStateSet(state.getNfaStates(), tag));
                     DFAState nextState = nFAToDFAMap.get(epsilonClosure);
                     if (nextState == null) { // 这是一个没有遇到的状态
@@ -121,10 +193,10 @@ public class DFA {
             Map<DFAState, String> dfaEndStates = new HashMap<>();
             Map<NFAState, String> nfaEndStates = nfa.getEndStates();
 
-            for (DFAState dfaState: dfaStates) {
+            for (DFAState dfaState : dfaStates) {
                 Set<NFAState> nfaStates = dfaState.getNfaStates();
                 String result = null;
-                for (NFAState nfaState: nfaStates) {
+                for (NFAState nfaState : nfaStates) {
                     if (nfaEndStates.keySet().contains(nfaState)) {
                         // 假如确实是一个原本NFA的终态
                         String tempResult = nfaEndStates.get(nfaState);
@@ -139,78 +211,6 @@ public class DFA {
             }
 
             return new DFA(startState, dfaEndStates);
-        }
-    }
-
-    @Override
-    public String toString() {
-        return "DFA{\n" +
-                "startState=" + startState +
-                ", \nendStates=" + endStates +
-                '}';
-    }
-
-    public static void export(DFA dfa, String targetLocation) {
-        targetLocation += "Template.java";
-        
-        String sourceCode = Template.getTemplate();
-        sourceCode = sourceCode.replace("<BeginState>", dfa.startState.getId() + "");
-
-        StringBuilder methodNameListBuilder = new StringBuilder();
-
-        // 向代码中添加结束状态
-        Map<DFAState, String> endStates = dfa.getEndStates();
-        StringBuilder endStateBuilder = new StringBuilder();
-        endStateBuilder.append("public static void initEndState() {\n");
-        Map<String, List<Integer>> nameToIndex = new HashMap<>();
-
-        for (String s: endStates.values())
-            nameToIndex.computeIfAbsent(s, k -> new ArrayList<>());
-        for (Map.Entry<DFAState, String> endState: endStates.entrySet())
-            nameToIndex.get(endState.getValue()).add(endState.getKey().getId());
-        for (Map.Entry<String, List<Integer>> item: nameToIndex.entrySet()) {
-            String name = item.getKey();
-            List<Integer> states = item.getValue();
-            endStateBuilder.append("addEndState(\"").append(name).append("\"");
-            for (Integer integer: states)
-                endStateBuilder.append(", ").append(integer);
-            endStateBuilder.append(");\n");
-        }
-        endStateBuilder.append("};\n");
-        methodNameListBuilder.append("initEndState();\n");
-        sourceCode = sourceCode.replace("<initEndState>", endStateBuilder.toString());
-
-        int nodeCount = 0;
-        int methodCount = 0;
-        // 向代码中添加转换关系
-        StringBuilder builder = new StringBuilder();
-        StringBuilder graphBuilder = new StringBuilder();
-        for (Map.Entry<Integer, DFAState> stateEntry: states.entrySet()) {
-            nodeCount++;
-            int id = stateEntry.getKey();
-            DFAState state = stateEntry.getValue();
-            graphBuilder.append("addDFA(").append(id);
-            for (DFAEdge edge: state.getOutEdges().values()) {
-                graphBuilder.append(", ").append((int)edge.getTag());
-                graphBuilder.append(", ").append(edge.getEndState().getId());
-            }
-            graphBuilder.append(");\n");
-            if (nodeCount % 10 == 0) { // 一个新的方法将要诞生
-                methodCount++;
-                builder.append("public static void init").append(methodCount).append(" () {\n")
-                        .append(graphBuilder.toString()).append("};\n");
-                methodNameListBuilder.append("init").append(methodCount).append("();\n");
-                graphBuilder.delete(0, graphBuilder.length());
-            }
-        }
-        sourceCode = sourceCode.replace("<initGraph>", builder.toString());
-
-        sourceCode = sourceCode.replace("<init>", methodNameListBuilder.toString());
-
-        try (PrintWriter writer = new PrintWriter(new FileOutputStream(targetLocation))) {
-            writer.write(sourceCode);
-        } catch (Exception e) {
-            e.printStackTrace();
         }
     }
 

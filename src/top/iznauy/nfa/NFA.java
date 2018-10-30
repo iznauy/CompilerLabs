@@ -2,7 +2,10 @@ package top.iznauy.nfa;
 
 import top.iznauy.re.RENode;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Stack;
 
 /**
  * Created on 2018/10/28.
@@ -26,22 +29,6 @@ public class NFA {
         this.endStates = endStates;
     }
 
-    public NFAState getStartState() {
-        return startState;
-    }
-
-    public void setStartState(NFAState startState) {
-        this.startState = startState;
-    }
-
-    public Map<NFAState, String> getEndStates() {
-        return endStates;
-    }
-
-    public void addEndState(NFAState endState, String type) {
-        this.endStates.put(endState, type);
-    }
-
     public static NFA merge(List<NFA> nfaList) {
         assert nfaList != null;
         assert nfaList.size() > 0;
@@ -52,7 +39,7 @@ public class NFA {
         NFAState startState = new NFAState();
         Map<NFAState, String> endStates = new HashMap<>();
 
-        for (NFA nfa: nfaList) {
+        for (NFA nfa : nfaList) {
             NFAState toState = nfa.getStartState();
             NFAEdge edge = new NFAEdge(null, startState, toState);
             startState.addOutEdge(edge);
@@ -61,17 +48,12 @@ public class NFA {
         return new NFA(startState, endStates);
     }
 
-    private static class Pair {
-        NFAState startState;
-        NFAState endState;
-    }
-
     private static Pair concat(Pair pair1, Pair pair2) {
         Pair pair = new Pair();
         pair.startState = pair1.startState;
         pair.endState = pair2.endState;
         List<NFAEdge> outEdges = pair2.startState.getOutEdges();
-        for (NFAEdge edge: outEdges) {
+        for (NFAEdge edge : outEdges) {
             edge.setFromState(pair1.endState);
             pair1.endState.addOutEdge(edge);
         }
@@ -121,7 +103,7 @@ public class NFA {
     public static NFA fromRE(List<RENode> reNodeList, String target) {
 
         Stack<Object> stack = new Stack<>();
-        for (RENode reNode: reNodeList) {
+        for (RENode reNode : reNodeList) {
             if (reNode.getType() == RENode.Type.Operator) {
                 char ch = reNode.getCh();
                 switch (ch) {
@@ -142,11 +124,11 @@ public class NFA {
                     case ')':
                         Stack<Object> hold = new Stack<>();
                         Object r = stack.pop();
-                        while (r instanceof Pair || (((RENode)r).getCh() != '(' && ((RENode)r).getType() == RENode.Type.Operator)) {
-                           hold.push(r); // 理论上这里面没有char类型的RENode，后半句可以不加
-                           r = stack.pop();
+                        while (r instanceof Pair || (((RENode) r).getCh() != '(' && ((RENode) r).getType() == RENode.Type.Operator)) {
+                            hold.push(r); // 理论上这里面没有char类型的RENode，后半句可以不加
+                            r = stack.pop();
                         }
-                        Pair p = (Pair)hold.pop();
+                        Pair p = (Pair) hold.pop();
                         while (!hold.empty()) {
                             Object q = hold.pop();
                             if (q instanceof Pair)
@@ -170,6 +152,21 @@ public class NFA {
         return nfa;
     }
 
+    public NFAState getStartState() {
+        return startState;
+    }
+
+    public void setStartState(NFAState startState) {
+        this.startState = startState;
+    }
+
+    public Map<NFAState, String> getEndStates() {
+        return endStates;
+    }
+
+    public void addEndState(NFAState endState, String type) {
+        this.endStates.put(endState, type);
+    }
 
     @Override
     public String toString() {
@@ -177,5 +174,10 @@ public class NFA {
                 "startState=" + startState +
                 ", endStates=" + endStates +
                 '}';
+    }
+
+    private static class Pair {
+        NFAState startState;
+        NFAState endState;
     }
 }
