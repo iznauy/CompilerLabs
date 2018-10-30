@@ -22,7 +22,9 @@ class DFAState {
         id = DFAStateIDGenerator.getId();
         outEdges = new HashMap<>();
         this.nfaStates = nfaStates;
+        DFA.states.put(id, this);
     }
+
     public int getId() {
         return id;
     }

@@ -49,8 +49,6 @@ public class DFARecognizer {
                 if (!toEnd && beforeEndState.length() == 0)
                     break;
                 else if (!toEnd && beforeEndState.length() > 0) { // 还有些字符
-
-                    System.out.println(beforeEndState.toString());
                     throw new RuntimeException("unfinished");
                 }
                 else {
