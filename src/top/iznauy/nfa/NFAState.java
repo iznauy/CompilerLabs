@@ -18,19 +18,16 @@ public class NFAState {
     public NFAState() {
         id = NFAStateIDGenerator.getId();
         outEdges = new ArrayList<>();
-        NFAMap.addState(this);
     }
 
     public NFAState(int id) {
         this.id = id;
         outEdges = new ArrayList<>();
-        NFAMap.addState(this);
     }
 
     public NFAState(int id, List<NFAEdge> outEdges) {
         this.id = id;
         this.outEdges = outEdges;
-        NFAMap.addState(this);
     }
 
     public int getId() {

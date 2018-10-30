@@ -70,7 +70,7 @@ public class NFA {
         Pair pair = new Pair();
         pair.startState = pair1.startState;
         pair.endState = pair2.endState;
-        List<NFAEdge> outEdges = pair2.endState.getOutEdges();
+        List<NFAEdge> outEdges = pair2.startState.getOutEdges();
         for (NFAEdge edge: outEdges) {
             edge.setFromState(pair1.endState);
             pair1.endState.addOutEdge(edge);

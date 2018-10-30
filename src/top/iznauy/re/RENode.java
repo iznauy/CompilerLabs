@@ -32,7 +32,10 @@ public final class RENode {
 
     @Override
     public String toString() {
-        return ch + "";
+        if (type == Type.Character)
+            return ch + "";
+        else
+            return "\\" + ch;
     }
 
 }

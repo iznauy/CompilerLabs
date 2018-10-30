@@ -48,8 +48,30 @@ public class DFARecognizer {
         }
 
         while (true) {
-            if (pointer >= content.length)
-                break;
+
+            System.out.println(pointer);
+
+            if (pointer >= content.length) {
+                if (!toEnd && beforeEndState.length() == 0)
+                    break;
+                else if (!toEnd && beforeEndState.length() > 0) // 还有些字符
+                    throw new RuntimeException("unfinished");
+                else {
+                    Token token = new Token(endType, beforeEndState.toString()); // 有一个token可以拿走
+                    tokens.add(token);
+                    beforeEndState.delete(0, beforeEndState.length());
+                    if (afterEndState.length() == 0)
+                        break; // 没有后续内容惹，直接退出
+                    else {
+                        toEnd = false;
+                        pointer -= afterEndState.length();
+                        afterEndState.delete(0, afterEndState.length());
+                        currentState = dfa.getStartState();
+                        continue;
+                    }
+                }
+            }
+
             char currentChar = content[pointer];
             pointer++;
             DFAEdge edge = currentState.getOutEdge(currentChar);
@@ -57,6 +79,7 @@ public class DFARecognizer {
                 if (!toEnd)
                     throw new RuntimeException("error");
                 else {
+                    toEnd = false;
                     Token token = new Token(endType, beforeEndState.toString());
                     tokens.add(token);
                     pointer -= afterEndState.length();
@@ -80,12 +103,6 @@ public class DFARecognizer {
                 }
             }
         }
-        if (!toEnd)
-            throw new RuntimeException("unfinished");
-        if (afterEndState.length() > 0)
-            throw new RuntimeException("extra chars");
-        Token token = new Token(endType, beforeEndState.toString());
-        tokens.add(token);
         return tokens;
     }
 
