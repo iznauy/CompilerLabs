@@ -114,34 +114,11 @@ public class NFA {
 
     public static Pair question(Pair rawPair) {
         Pair pair = charPair(null);
-        return concat(rawPair, pair);
+        return union(rawPair, pair);
 
     }
 
     public static NFA fromRE(List<RENode> reNodeList, String target) {
-//        List<RENode> extendRENodeList = new ArrayList<>();
-//        RENode lastRENode = null;
-//        for (RENode reNode: reNodeList) {
-//            if (lastRENode == null) {
-//                lastRENode = reNode;
-//                extendRENodeList.add(reNode);
-//                continue;
-//            }
-//
-//            boolean addConcat = false;
-//            if (reNode.getType() == RENode.Type.Character && lastRENode.getType() == RENode.Type.Character) // 假如两边都是普通字符
-//                 // 这种标志就表示是连接运算
-//                addConcat = true;
-//            else if (reNode.getType() == RENode.Type.Character && lastRENode.getType() == RENode.Type.Operator &&
-//                    lastRENode.getCh() == ')') //"asda)a"，这样的串也需要连接
-//                addConcat = true;
-//            else if (reNode.getType() == RENode.Type.Operator)
-//
-//            if (addConcat)
-//                extendRENodeList.add(new RENode(RENode.Type.Operator, '.'));
-//            extendRENodeList.add(reNode);
-//            lastRENode = reNode;
-//        }
 
         Stack<Object> stack = new Stack<>();
         for (RENode reNode: reNodeList) {

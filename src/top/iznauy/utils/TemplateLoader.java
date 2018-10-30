@@ -48,7 +48,7 @@ public class TemplateLoader {
                 if (inConstantSpace) {
                     constantMap.put(name, re);
                 } else { // 已经到了下面的词素定义区域
-                    REs.reToPrior.put(re, prior);
+                    REs.reToPrior.put(name, prior);
                     prior++; // 排在后边的表达式优先级会更高一些
                     nameToRE.put(name, re);
                 }

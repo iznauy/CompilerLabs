@@ -49,13 +49,14 @@ public class DFARecognizer {
 
         while (true) {
 
-            System.out.println(pointer);
-
             if (pointer >= content.length) {
                 if (!toEnd && beforeEndState.length() == 0)
                     break;
-                else if (!toEnd && beforeEndState.length() > 0) // 还有些字符
+                else if (!toEnd && beforeEndState.length() > 0) { // 还有些字符
+
+                    System.out.println(beforeEndState.toString());
                     throw new RuntimeException("unfinished");
+                }
                 else {
                     Token token = new Token(endType, beforeEndState.toString()); // 有一个token可以拿走
                     tokens.add(token);
@@ -75,6 +76,8 @@ public class DFARecognizer {
             char currentChar = content[pointer];
             pointer++;
             DFAEdge edge = currentState.getOutEdge(currentChar);
+
+
             if (edge == null) {
                 if (!toEnd)
                     throw new RuntimeException("error");

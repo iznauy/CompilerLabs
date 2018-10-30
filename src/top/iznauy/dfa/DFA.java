@@ -145,8 +145,10 @@ public class DFA {
                     if (nfaEndStates.keySet().contains(nfaState)) {
                         // 假如确实是一个原本NFA的终态
                         String tempResult = nfaEndStates.get(nfaState);
-                        if (result == null || REs.reToPrior.get(tempResult) > REs.reToPrior.get(result)) // 优先级更高，优先识别
+                        if (result == null || REs.reToPrior.get(tempResult) > REs.reToPrior.get(result)) {// 优先级更高，优先识别
                             result = tempResult;
+                        }
+
                     }
                 }
                 if (result != null) // 也是DFA的终态

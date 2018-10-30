@@ -36,9 +36,6 @@ public class Token {
 
     @Override
     public String toString() {
-        return "Token{" +
-                "type='" + type + '\'' +
-                ", code='" + code + '\'' +
-                '}';
+        return type + ":\t\t" + code.trim();
     }
 }
