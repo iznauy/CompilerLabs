@@ -5,6 +5,8 @@ import top.iznauy.nfa.NFAEdge;
 import top.iznauy.nfa.NFAState;
 import top.iznauy.utils.REs;
 
+import java.io.FileOutputStream;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -15,14 +17,11 @@ import java.util.*;
  */
 public class DFA {
 
+    static Map<Integer, DFAState> states = new HashMap<>();
+
     private DFAState startState;
 
     private Map<DFAState, String> endStates;
-
-    public DFA(DFAState startState) {
-        this.startState = startState;
-        this.endStates = new HashMap<>();
-    }
 
     public DFA(DFAState startState, Map<DFAState, String> endStates) {
         this.startState = startState;
@@ -149,6 +148,70 @@ public class DFA {
                 "startState=" + startState +
                 ", \nendStates=" + endStates +
                 '}';
+    }
+
+    public static void export(DFA dfa, String targetLocation) {
+        targetLocation += "Template.java";
+        
+        String sourceCode = Template.getTemplate();
+        sourceCode = sourceCode.replace("<BeginState>", dfa.startState.getId() + "");
+
+        StringBuilder methodNameListBuilder = new StringBuilder();
+
+        // 向代码中添加结束状态
+        Map<DFAState, String> endStates = dfa.getEndStates();
+        StringBuilder endStateBuilder = new StringBuilder();
+        endStateBuilder.append("public static void initEndState() {\n");
+        Map<String, List<Integer>> nameToIndex = new HashMap<>();
+
+        for (String s: endStates.values())
+            nameToIndex.computeIfAbsent(s, k -> new ArrayList<>());
+        for (Map.Entry<DFAState, String> endState: endStates.entrySet())
+            nameToIndex.get(endState.getValue()).add(endState.getKey().getId());
+        for (Map.Entry<String, List<Integer>> item: nameToIndex.entrySet()) {
+            String name = item.getKey();
+            List<Integer> states = item.getValue();
+            endStateBuilder.append("addEndState(\"").append(name).append("\"");
+            for (Integer integer: states)
+                endStateBuilder.append(", ").append(integer);
+            endStateBuilder.append(");\n");
+        }
+        endStateBuilder.append("};\n");
+        methodNameListBuilder.append("initEndState();\n");
+        sourceCode = sourceCode.replace("<initEndState>", endStateBuilder.toString());
+
+        int nodeCount = 0;
+        int methodCount = 0;
+        // 向代码中添加转换关系
+        StringBuilder builder = new StringBuilder();
+        StringBuilder graphBuilder = new StringBuilder();
+        for (Map.Entry<Integer, DFAState> stateEntry: states.entrySet()) {
+            nodeCount++;
+            int id = stateEntry.getKey();
+            DFAState state = stateEntry.getValue();
+            graphBuilder.append("addDFA(").append(id);
+            for (DFAEdge edge: state.getOutEdges().values()) {
+                graphBuilder.append(", ").append((int)edge.getTag());
+                graphBuilder.append(", ").append(edge.getEndState().getId());
+            }
+            graphBuilder.append(");\n");
+            if (nodeCount % 10 == 0) { // 一个新的方法将要诞生
+                methodCount++;
+                builder.append("public static void init").append(methodCount).append(" () {\n")
+                        .append(graphBuilder.toString()).append("};\n");
+                methodNameListBuilder.append("init").append(methodCount).append("();\n");
+                graphBuilder.delete(0, graphBuilder.length());
+            }
+        }
+        sourceCode = sourceCode.replace("<initGraph>", builder.toString());
+
+        sourceCode = sourceCode.replace("<init>", methodNameListBuilder.toString());
+
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(targetLocation))) {
+            writer.write(sourceCode);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 }

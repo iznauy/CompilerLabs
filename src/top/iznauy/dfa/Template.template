@@ -1,0 +1,150 @@
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.util.*;
+
+/**
+ * Created on 2018/10/30.
+ * Description:
+ *
+ * @author iznauy
+ */
+public class Template {
+
+    public static class Token {
+
+        public String type;
+
+        public String code;
+
+        public Token(String type, String code) {
+            this.type = type;
+            this.code = code;
+        }
+
+        @Override
+        public String toString() {
+            return type + ":\t\t<'" + code.trim() + "'>";
+        }
+    }
+
+    private static Map<Integer, String> stateIdToTarget = new HashMap<>();
+
+    private static Map<Integer, Map<Character, Integer>> dfa = new HashMap<>();
+
+    private static int beginState = <BeginState>; // 0 will be replaced
+
+    public static void main(String[] args) {
+        if (args.length == 0) {
+            System.out.println("Usage: java Template InputFile");
+            return;
+        }
+        <init>
+        // read source code
+        StringBuilder sourceCodeBuilder = new StringBuilder();
+        try (BufferedReader reader = new BufferedReader(new FileReader(args[0]))) {
+            String line;
+            while((line = reader.readLine()) != null)
+                sourceCodeBuilder.append(line);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return;
+        }
+        char[] sourceCode = sourceCodeBuilder.toString().toCharArray();
+
+        List<Token> tokens = new ArrayList<>();
+        int pointer = 0;
+        Set<Integer> endStates = stateIdToTarget.keySet();
+
+        StringBuffer beforeEndState = new StringBuffer();
+        StringBuffer afterEndState = new StringBuffer();
+
+        int currentState = beginState;
+        boolean toEnd = false;
+        String endType = null;
+
+        if (endStates.contains(currentState)) {
+            toEnd = true;
+            endType = stateIdToTarget.get(currentState);
+        }
+
+        while (true) {
+            if (pointer >= sourceCode.length) {
+                if (!toEnd && beforeEndState.length() == 0)
+                    break;
+                else if (!toEnd && beforeEndState.length() > 0) {
+                    throw new RuntimeException("UnFinished Program");
+                } else {
+                    Token token = new Token(endType, beforeEndState.toString());
+                    tokens.add(token);
+                    beforeEndState.delete(0, beforeEndState.length());
+                    if (afterEndState.length() == 0)
+                        break;
+                    else {
+                        toEnd = false;
+                        pointer -= afterEndState.length();
+                        afterEndState.delete(0, afterEndState.length());
+                        currentState = beginState;
+                        continue;
+                    }
+                }
+            }
+
+            char currentChar = sourceCode[pointer];
+            pointer++;
+
+            Integer nextState = dfa.get(currentState).get(currentChar);
+            if (nextState == null) {
+                if (!toEnd)
+                    throw new RuntimeException("Error");
+                else {
+                    toEnd = false;
+                    Token token = new Token(endType, beforeEndState.toString());
+                    tokens.add(token);
+                    pointer -= afterEndState.length();
+                    pointer--;
+                    beforeEndState.delete(0, beforeEndState.length());
+                    afterEndState.delete(0, afterEndState.length());
+                    currentState = beginState;
+                }
+            } else {
+                currentState = nextState;
+                if (toEnd)
+                    afterEndState.append(currentChar);
+                else
+                    beforeEndState.append(currentChar);
+
+                if (endStates.contains(currentState)) {
+                    toEnd = true;
+                    endType = stateIdToTarget.get(currentState);
+                    beforeEndState.append(afterEndState.toString());
+                    afterEndState.delete(0, afterEndState.length());
+                }
+            }
+        }
+
+        for (Token token: tokens) {
+            System.out.println(token);
+        }
+
+    }
+
+    private static void addDFA(int state, int ... params) {
+        Map<Character, Integer> nextStates = new HashMap<>();
+        for (int i = 0; i < params.length / 2; i++) {
+            char ch = (char) params[i * 2];
+            int next = params[2 * i + 1];
+            nextStates.put(ch, next);
+        }
+        dfa.put(state, nextStates);
+    }
+
+    private static void addEndState(String name, int ... states) {
+        for (int state: states) {
+            stateIdToTarget.put(state, name);
+        }
+    }
+
+    <initEndState>
+
+    <initGraph>
+}
