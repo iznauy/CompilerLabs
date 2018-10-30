@@ -10,6 +10,7 @@ import java.io.FileReader;
  *
  * @author iznauy
  */
+@Deprecated
 public class SourceLoader {
 
     public static String loadSourceCode(String filePath) {

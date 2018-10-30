@@ -13,6 +13,7 @@ import java.util.Set;
  *
  * @author iznauy
  */
+@Deprecated
 public class DFARecognizer {
 
     private DFA dfa;

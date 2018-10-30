@@ -18,7 +18,7 @@ import java.util.Map;
 public class Main {
 
     public static void main(String[] args) {
-        args = new String[]{"/Users/iznauy/CompilerLabs/java.czj", "/Users/iznauy/CompilerLabs/"};
+        //args = new String[]{"/Users/iznauy/CompilerLabs/example/java.czj", "/Users/iznauy/CompilerLabs/example/"};
         if (args.length < 2) {
             System.out.println("Usage: java Main regular.czj destinationPath");
             System.out.println("regular.czj: 自定义的文法规则");
@@ -38,10 +38,11 @@ public class Main {
         DFA.export(dfa, args[1]);
     }
 
+    @Deprecated
     public static void main1(String[] args) {
         // args[0]: .czj file
         // args[1]: source code
-        args = new String[]{"/Users/iznauy/CompilerLabs/java.czj", "/Users/iznauy/CompilerLabs/Main.java", "/Users/iznauy/CompilerLabs/output.txt"};
+        //args = new String[]{"/Users/iznauy/CompilerLabs/java.czj", "/Users/iznauy/CompilerLabs/Main.java", "/Users/iznauy/CompilerLabs/output.txt"};
 
         if (args.length < 2) {
             System.out.println("Usage: java Main regular.czj sourceCode [destination]");
