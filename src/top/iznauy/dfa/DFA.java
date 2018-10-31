@@ -81,6 +81,12 @@ public class DFA {
                 graphBuilder.delete(0, graphBuilder.length());
             }
         }
+        methodCount++;
+        builder.append("public static void init").append(methodCount).append(" () {\n")
+                .append(graphBuilder.toString()).append("};\n");
+        methodNameListBuilder.append("init").append(methodCount).append("();\n");
+        graphBuilder.delete(0, graphBuilder.length());
+
         sourceCode = sourceCode.replace("<initGraph>", builder.toString());
 
         sourceCode = sourceCode.replace("<init>", methodNameListBuilder.toString());
