@@ -109,4 +109,21 @@ public final class CFG {
 
         return new CFG(startSymbol, productionMap, terminals);
     }
+
+    public static Set<LRItem> constructClosure(Set<LRItem> lrItemList) {
+        Set<LRItem> resultSet = new HashSet<>(lrItemList);
+        boolean changed = true;
+
+        while (changed) {
+            Set<LRItem> tempSet = new HashSet<>();
+            for (LRItem item: resultSet) {
+                int pointer = item.getPointer();
+                //todo: 先搞定计算first和follow集合，才能写下去。
+            }
+        }
+
+
+        return resultSet;
+    }
+
 }

@@ -8,7 +8,7 @@ import java.util.List;
  *
  * @author iznauy
  */
-final class Production {
+class Production {
 
     private String name;
 
