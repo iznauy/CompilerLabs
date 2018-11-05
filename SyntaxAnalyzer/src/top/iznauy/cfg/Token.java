@@ -8,10 +8,13 @@ package top.iznauy.cfg;
  */
 final class Token {
 
+    public static final Token dot = new Token(null, Type.DOT);
+
     public static enum Type {
         TERMINAL,
         NON_TERMINAL,
-        START
+        START,
+        DOT
     }
 
     private final String content;
