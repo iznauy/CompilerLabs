@@ -20,9 +20,9 @@ public class Main {
 
     public static void main(String[] args) {
 
-//        args = new String[] {"/Users/iznauy/CompilerLabs/SyntaxAnalyzer/test.cfg", "/Users/izn" +
-//                "auy/CompilerLabs/SyntaxAnalyzer/test_in.txt" ,
-//                "/Users/iznauy/CompilerLabs/SyntaxAnalyzer/test_out.txt"};
+//        args = new String[] {"/Users/iznauy/CompilerLabs/SyntaxAnalyzer/example/test.cfg", "/Users/izn" +
+//                "auy/CompilerLabs/SyntaxAnalyzer/example/test_in.txt" ,
+//                "/Users/iznauy/CompilerLabs/SyntaxAnalyzer/example/test_out.txt"};
 
         if (args.length < 3) {
             System.out.println("Usage: java Main [CFG.cfg] [input.txt] [output.txt]");
