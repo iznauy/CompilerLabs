@@ -17,11 +17,42 @@ public final class CFG {
 
     private Set<String> terminals;
 
+    private Map<String, Set<String>> first;
+
     private CFG(String startSymbol, Map<String, List<Production>> productionMap, Set<String> terminals) {
         this.startSymbol = startSymbol;
         this.productionMap = productionMap;
         this.terminals = terminals;
+        this.first = new HashMap<>();
+        this.calculateFirstSet(); // 计算
     }
+
+    private void calculateFirstSet() {
+        for (String name: productionMap.keySet())
+            first.put(name, new HashSet<>());
+
+        boolean changed = true;
+        while (changed) {
+            changed = false;
+            for (String name: first.keySet()) {
+                List<Production> productions = productionMap.get(name);
+                for (Production production: productions) {
+                    Token token = production.getItem(0); // 获取第一个token
+                    Set<String> firstSet = first.get(name);
+                    if (token.getType() == Token.Type.TERMINAL) {
+                        firstSet.add(token.getContent()); // 如果是一个终结符，就加进去
+                        changed = true;
+                    } else if (token.getType() == Token.Type.NON_TERMINAL) { // 对于非终结符
+                        int preSize = firstSet.size();
+                        firstSet.addAll(first.get(token.getContent()));
+                        if (preSize != firstSet.size())
+                            changed = true;
+                    }
+                }
+            }
+        }
+    }
+
 
     public String getStartSymbol() {
         return startSymbol;

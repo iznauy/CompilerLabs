@@ -40,7 +40,7 @@ final class LRItem {
     }
 
     public Token nextAcceptToken() {
-        return production.getItems().get(pointer);
+        return production.getItem(pointer);
     }
 
     public LRItem move() {

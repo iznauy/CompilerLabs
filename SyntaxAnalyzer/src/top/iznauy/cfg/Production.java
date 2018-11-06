@@ -37,6 +37,10 @@ final class Production {
         return id;
     }
 
+    Token getItem(int index) {
+        return items.get(index);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
