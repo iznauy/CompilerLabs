@@ -1,13 +1,14 @@
 package top.iznauy;
 
 import top.iznauy.cfg.CFG;
+import top.iznauy.cfg.LRItem;
+import top.iznauy.cfg.Token;
+import top.iznauy.table.Action;
+import top.iznauy.table.Table;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created on 05/11/2018.
@@ -46,7 +47,22 @@ public class Main {
             return;
         }
         CFG cfg = CFG.parse(startSymbol, nonTerminalSymbols, productionStrings);
-        System.out.println(cfg);
+        Table table = cfg.exportTable();
+        Map<Token, List<Action>> tableContent = table.getTableColumns();
+        List<Token> tokenList = new ArrayList<>(tableContent.keySet());
+        List<Integer> sequence = Arrays.asList(0, 4, 5, 3, 2, 1, 8, 6, 7, 11, 12, 10, 9, 13);
+        for (Token token: tokenList) {
+            System.out.print(token);
+            System.out.print(" ");
+        }
+        System.out.println();
+        for (Integer index: sequence) {
+            for (Token token: tokenList) {
+                System.out.print(table.getByRowAndCol(index, token));
+                System.out.print(" ");
+            }
+            System.out.println();
+        }
     }
 
 }

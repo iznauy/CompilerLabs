@@ -1,7 +1,6 @@
 package top.iznauy.cfg;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Created on 05/11/2018.
@@ -85,5 +84,19 @@ public final class LRItem {
                 ", pointer=" + pointer +
                 ", production=" + production +
                 '}';
+    }
+
+    public static boolean sameState(Set<LRItem> set1, Set<LRItem> set2) {
+        if (!set1.equals(set2))
+            return false;
+        List<LRItem> list1 = new ArrayList<>(set1);
+        List<LRItem> list2 = new ArrayList<>(set2);
+        for (LRItem item1: list1) {
+            int index = list2.indexOf(item1);
+            LRItem item2 = list2.get(index);
+            if (!item1.probe.equals(item2.probe))
+                return false;
+        }
+        return true;
     }
 }

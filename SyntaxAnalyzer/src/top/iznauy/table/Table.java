@@ -18,6 +18,7 @@ public class Table {
     private int length = 0;
 
     public Table(Collection<? extends Token> tokens) {
+        tableColumns = new HashMap<>();
         for (Token token: tokens) {
             tableColumns.put(token, new ArrayList<>());
         }
@@ -47,5 +48,13 @@ public class Table {
         while (row >= actionList.size())
             actionList.add(null);
         actionList.set(row, action);
+    }
+
+    @Override
+    public String toString() {
+        return "Table{" +
+                "tableColumns=" + tableColumns +
+                ", length=" + length +
+                '}';
     }
 }

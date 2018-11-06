@@ -38,7 +38,10 @@ public class Action {
         J, // 用在goto部分表示跳转
         S, // 入栈
         ACC, // 接受
-        ERROR; // 出错
     }
 
+    @Override
+    public String toString() {
+        return actionType + "" + next;
+    }
 }

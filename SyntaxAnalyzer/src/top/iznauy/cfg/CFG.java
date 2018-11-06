@@ -150,9 +150,11 @@ public final class CFG {
     public Set<LRItem> move(Set<LRItem> lrItemList, Token token) {
         Set<LRItem> resultSet = new HashSet<>();
         for (LRItem item: lrItemList) {
-            Token nextToken = item.nextAcceptToken();
-            if (nextToken.equals(token)) // 正好是
-                resultSet.add(item.move());
+            if (!item.toEnd()) {
+                Token nextToken = item.nextAcceptToken();
+                if (nextToken.equals(token)) // 正好是
+                    resultSet.add(item.move());
+            }
         }
         return resultSet.size() > 0 ? resultSet : null; // 假如没有东西，那就返回null
     }
@@ -242,11 +244,12 @@ public final class CFG {
         List<Token> allTokens = terminals.stream().map(e -> new Token(e, Token.Type.TERMINAL))
                 .collect(Collectors.toList());
         allTokens.add(new Token("$", Token.Type.TERMINAL));
-        allTokens.addAll(productionMap.keySet().stream().map(e -> new Token(e, Token.Type.NON_TERMINAL))
+        allTokens.addAll(productionMap.keySet().stream().filter(e -> !e.equals(startSymbol)).map(e -> new Token(e, Token.Type.NON_TERMINAL))
                 .collect(Collectors.toList()));
         Table table = new Table(allTokens);
         table.addRow();
         for (int i = 0; i < itemSetList.size(); i++) {
+//            System.out.println("第" + i + "个状态 = " +  itemSetList.get(i));
             Set<LRItem> curLRItems = itemSetList.get(i);
             // 首先计算出出边
             for (Token inputToken: allTokens) {
@@ -256,8 +259,8 @@ public final class CFG {
                 // 假如移动后不为空，就说明是一个合法的input
                 afterMoveSet = constructClosure(afterMoveSet);
                 boolean has = false;
-                for (int j = 0; j < itemSetList.size(); j++) {
-                    if (afterMoveSet.equals(itemSetList.get(j))) {
+                for (int j = 0; j < itemSetList.size(); j++) { // Done:这儿有一个bug，就是对于同心状态，会被识别成一个，就会导致出错，等会洗完澡修复下。
+                    if (LRItem.sameState(afterMoveSet, itemSetList.get(j))) {
                         // 如果是已经有的状态
                         if (inputToken.getType() == Token.Type.TERMINAL) // 终结符的话，是移入栈中
                             table.setByRowAndCol(i, inputToken, new Action(j, Action.ActionType.S));
