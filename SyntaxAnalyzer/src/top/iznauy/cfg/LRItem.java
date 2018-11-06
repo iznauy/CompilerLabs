@@ -11,23 +11,23 @@ import java.util.Set;
  */
 final class LRItem {
 
-    private final Set<Token> probe; // 展望符集合
+    private final Set<String> probe; // 展望符集合
 
     private final int pointer; // 指针为k表示在第k个的前面，所以指针后面的元素为items[pointer]
 
     private final Production production; // 对应的产生式
 
-    public LRItem(Set<Token> probe, int pointer, Production production) {
+    public LRItem(Set<String> probe, int pointer, Production production) {
         this.production = production;
         this.probe = probe;
         this.pointer = pointer;
     }
 
-    public void addProbe(Token token) {
+    public void addProbe(String token) {
         this.probe.add(token);
     }
 
-    public Set<Token> getProbe() {
+    public Set<String> getProbe() {
         return probe;
     }
 
@@ -39,12 +39,16 @@ final class LRItem {
         return production;
     }
 
+    public Token getByPointer(int pointer) {
+        return production.getItem(pointer);
+    }
+
     public Token nextAcceptToken() {
         return production.getItem(pointer);
     }
 
     public LRItem move() {
-        Set<Token> probeCopy = new HashSet<>(probe);
+        Set<String> probeCopy = new HashSet<>(probe);
         return new LRItem(probeCopy, pointer + 1, production);
     }
 
@@ -52,4 +56,25 @@ final class LRItem {
         return production.getItems().size() == pointer;
     }
 
+    public int getProductionSize() {
+        return production.getItems().size();
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        LRItem item = (LRItem) o;
+
+        if (pointer != item.pointer) return false;
+        return production != null ? production.equals(item.production) : item.production == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = pointer;
+        result = 31 * result + (production != null ? production.hashCode() : 0);
+        return result;
+    }
 }

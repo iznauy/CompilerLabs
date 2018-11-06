@@ -6,7 +6,7 @@ package top.iznauy.cfg;
  *
  * @author iznauy
  */
-final class Token {
+public final class Token {
 
     public static enum Type {
         TERMINAL,

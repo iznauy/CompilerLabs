@@ -6,16 +6,11 @@ package top.iznauy.table;
  *
  * @author iznauy
  */
-class Action {
+public class Action {
 
     private Integer next;
 
     private ActionType actionType;
-
-    public Action(ActionType actionType) {
-        next = null;
-        this.actionType = actionType;
-    }
 
     public Action(Integer next, ActionType actionType) {
         this.next = next;
