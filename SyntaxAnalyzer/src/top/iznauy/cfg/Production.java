@@ -61,9 +61,9 @@ final class Production {
 
     @Override
     public String toString() {
-        return "Production{" +
-                "name='" + name + '\'' +
-                ", items=" + items +
-                '}';
+        StringBuffer buffer = new StringBuffer();
+        for (Token token: items)
+            buffer.append(token);
+        return name + "->" + buffer.toString();
     }
 }

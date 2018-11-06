@@ -189,26 +189,33 @@ public final class CFG {
                 List<Production> productions = productionMap.get(content); // 拿到非终结符的所有产生式
 
                 for (Production production: productions) {
+                    boolean has = false;
                     for (LRItem innerItem: resultSet) { // 对于每一个产生式，查看历史结果集是不是已经有了这样的式子
-                        if (innerItem.getProduction().equals(production) && innerItem.getPointer() == pointer) { // 已经有了
+                        if (innerItem.getProduction().equals(production) && innerItem.getPointer() == 0) { // 已经有了
+                            has = true;
                             if (!innerItem.getProbe().containsAll(probeSet)) { // 但是没有全部的项目
                                 changed = true;
+
                                 innerItem.getProbe().addAll(probeSet);
+                                break;
                             }
-                        } else { // 或者干脆没有
-                            LRItem tempNewItem = new LRItem(probeSet, 0, production);
-                            changed = true;
-                            boolean news = true;
-                            for (LRItem otherNewItem: tempResultList) {
-                                if (otherNewItem.equals(tempNewItem)) {
-                                    otherNewItem.getProbe().addAll(probeSet);
-                                    news = false;
-                                    break;
-                                }
-                            }
-                            if (news)
-                                tempResultList.add(tempNewItem);
                         }
+                    }
+                    if (!has) {
+                         // 或者干脆没有
+                        LRItem tempNewItem = new LRItem(probeSet, 0, production);
+                        changed = true;
+                        boolean news = true;
+                        for (LRItem otherNewItem: tempResultList) {
+                            if (otherNewItem.equals(tempNewItem)) {
+                                otherNewItem.getProbe().addAll(probeSet);
+                                news = false;
+                                break;
+                            }
+                        }
+                        if (news)
+                            tempResultList.add(tempNewItem);
+
                     }
                 }
             }
@@ -217,7 +224,7 @@ public final class CFG {
         return resultSet;
     }
 
-    private Set<LRItem> initStartSet() {
+    public Set<LRItem> initStartSet() {
         Set<String> temp = new HashSet<>();
         temp.add("$");
         LRItem initLRItem = new LRItem(temp, 0, this.productionMap.get(this.startSymbol).get(0));
@@ -234,7 +241,7 @@ public final class CFG {
         itemSetList.add(startLRItem);
         List<Token> allTokens = terminals.stream().map(e -> new Token(e, Token.Type.TERMINAL))
                 .collect(Collectors.toList());
-        allTokens.add(new Token("$", Token.Type.TERMINAL))
+        allTokens.add(new Token("$", Token.Type.TERMINAL));
         allTokens.addAll(productionMap.keySet().stream().map(e -> new Token(e, Token.Type.NON_TERMINAL))
                 .collect(Collectors.toList()));
         Table table = new Table(allTokens);

@@ -9,7 +9,7 @@ import java.util.Set;
  *
  * @author iznauy
  */
-final class LRItem {
+public final class LRItem {
 
     private final Set<String> probe; // 展望符集合
 
@@ -76,5 +76,14 @@ final class LRItem {
         int result = pointer;
         result = 31 * result + (production != null ? production.hashCode() : 0);
         return result;
+    }
+
+    @Override
+    public String toString() {
+        return "LRItem{" +
+                "probe=" + probe +
+                ", pointer=" + pointer +
+                ", production=" + production +
+                '}';
     }
 }
