@@ -1,0 +1,9 @@
+L -> id
+R -> L
+L -> *R
+L -> id
+R -> L
+L -> *R
+R -> L
+S -> L=R
+S' -> S

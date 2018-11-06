@@ -293,6 +293,7 @@ public final class CFG {
                 }
             }
         }
+        table.addAccState();
         return table;
     }
 }

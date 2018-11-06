@@ -1,13 +1,13 @@
 package top.iznauy;
 
 import top.iznauy.cfg.CFG;
-import top.iznauy.cfg.LRItem;
-import top.iznauy.cfg.Token;
-import top.iznauy.table.Action;
+import top.iznauy.cfg.Production;
 import top.iznauy.table.Table;
 
 import java.io.BufferedReader;
+import java.io.FileOutputStream;
 import java.io.FileReader;
+import java.io.PrintWriter;
 import java.util.*;
 
 /**
@@ -19,11 +19,21 @@ import java.util.*;
 public class Main {
 
     public static void main(String[] args) {
-        String CFG_File_Path = "/Users/iznauy/CompilerLabs/SyntaxAnalyzer/test.cfg";
-        String startSymbol = null;
+
+//        args = new String[] {"/Users/iznauy/CompilerLabs/SyntaxAnalyzer/test.cfg", "/Users/izn" +
+//                "auy/CompilerLabs/SyntaxAnalyzer/test_in.txt" ,
+//                "/Users/iznauy/CompilerLabs/SyntaxAnalyzer/test_out.txt"};
+
+        if (args.length < 3) {
+            System.out.println("Usage: java Main [CFG.cfg] [input.txt] [output.txt]");
+            return;
+        }
+
+        String startSymbol;
         Set<String> nonTerminalSymbols = new HashSet<>();
         List<String> productionStrings = new ArrayList<>();
-        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(CFG_File_Path))) {
+        String content;
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(args[0]))) {
             String line;
             startSymbol = bufferedReader.readLine();
             int state = 0;
@@ -46,23 +56,36 @@ public class Main {
             System.out.println("CFG文件读取出错。");
             return;
         }
+        StringBuffer buffer = new StringBuffer();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(args[1]))) {
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null)
+                buffer.append(line.trim());
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("输入文件读取出错");
+            return;
+        }
+        content = buffer.toString();
+        String[] contents = content.split(" ");
+        List<String> inputSeq = Arrays.asList(contents);
+        inputSeq = new ArrayList<>(inputSeq);
+
         CFG cfg = CFG.parse(startSymbol, nonTerminalSymbols, productionStrings);
         Table table = cfg.exportTable();
-        Map<Token, List<Action>> tableContent = table.getTableColumns();
-        List<Token> tokenList = new ArrayList<>(tableContent.keySet());
-        List<Integer> sequence = Arrays.asList(0, 4, 5, 3, 2, 1, 8, 6, 7, 11, 12, 10, 9, 13);
-        for (Token token: tokenList) {
-            System.out.print(token);
-            System.out.print(" ");
-        }
-        System.out.println();
-        for (Integer index: sequence) {
-            for (Token token: tokenList) {
-                System.out.print(table.getByRowAndCol(index, token));
-                System.out.print(" ");
+        List<Production> productions = table.parse(inputSeq);
+
+        try (PrintWriter writer = new PrintWriter(new FileOutputStream(args[2]))) {
+            for (Production production: productions) {
+                writer.write(production.toString());
+                writer.write('\n');
             }
-            System.out.println();
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("写入结果出错");
         }
+
     }
 
 }

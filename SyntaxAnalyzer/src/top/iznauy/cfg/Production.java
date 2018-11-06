@@ -1,6 +1,8 @@
 package top.iznauy.cfg;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created on 05/11/2018.
@@ -8,7 +10,9 @@ import java.util.List;
  *
  * @author iznauy
  */
-final class Production {
+public final class Production {
+
+    public static List<Production> productions = new ArrayList<>();
 
     private static int count = 0;
 
@@ -23,9 +27,10 @@ final class Production {
         count++;
         this.name = name;
         this.items = items;
+        productions.add(this);
     }
 
-    String getName() {
+    public String getName() {
         return name;
     }
 
@@ -39,6 +44,14 @@ final class Production {
 
     Token getItem(int index) {
         return items.get(index);
+    }
+
+    public int getLength() {
+        return items.size();
+    }
+
+    public boolean follow(List<Token> tokens) {
+        return items.equals(tokens);
     }
 
     @Override
@@ -64,6 +77,6 @@ final class Production {
         StringBuffer buffer = new StringBuffer();
         for (Token token: items)
             buffer.append(token);
-        return name + "->" + buffer.toString();
+        return name + " -> " + buffer.toString();
     }
 }
