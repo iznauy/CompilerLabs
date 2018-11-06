@@ -8,31 +8,33 @@ import java.util.List;
  *
  * @author iznauy
  */
-class Production {
+final class Production {
 
-    private String name;
+    private static int count = 0;
 
-    private List<Token> items;
+    private final int id;
+
+    private final String name;
+
+    private final List<Token> items;
 
     Production(String name, List<Token> items) {
+        this.id = count;
+        count++;
         this.name = name;
         this.items = items;
     }
 
-    public String getName() {
+    String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public List<Token> getItems() {
+    List<Token> getItems() {
         return items;
     }
 
-    public void setItems(List<Token> items) {
-        this.items = items;
+    public int getId() {
+        return id;
     }
 
     @Override

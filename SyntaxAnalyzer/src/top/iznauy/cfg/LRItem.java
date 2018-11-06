@@ -1,6 +1,6 @@
 package top.iznauy.cfg;
 
-import java.util.List;
+import java.util.HashSet;
 import java.util.Set;
 
 /**
@@ -9,63 +9,47 @@ import java.util.Set;
  *
  * @author iznauy
  */
-final class LRItem extends Production{
+final class LRItem {
 
-    private Set<Token> probe;
+    private final Set<Token> probe; // 展望符集合
 
-    private int pointer; // 指针为k表示在第k个的前面，所以指针后面的元素为items[pointer]
+    private final int pointer; // 指针为k表示在第k个的前面，所以指针后面的元素为items[pointer]
 
-    public LRItem(String name, List<Token> items, Set<Token> probe, int pointer) {
-        super(name, items);
+    private final Production production; // 对应的产生式
+
+    public LRItem(Set<Token> probe, int pointer, Production production) {
+        this.production = production;
         this.probe = probe;
         this.pointer = pointer;
     }
 
-    public LRItem(Set<Token> probe, int pointer, Production production) {
-        super(production.getName(), production.getItems());
-        this.probe = probe;
-        this.pointer = pointer;
+    public void addProbe(Token token) {
+        this.probe.add(token);
     }
 
     public Set<Token> getProbe() {
         return probe;
     }
 
-    public void setProbe(Set<Token> probe) {
-        this.probe = probe;
-    }
-
     public int getPointer() {
         return pointer;
     }
 
-    public void setPointer(int pointer) {
-        this.pointer = pointer;
+    public Production getProduction() {
+        return production;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        if (!super.equals(o)) return false;
-
-        LRItem lrItem = (LRItem) o;
-
-        if (pointer != lrItem.pointer) return false;
-        return probe != null ? probe.equals(lrItem.probe) : lrItem.probe == null;
+    public Token nextAcceptToken() {
+        return production.getItems().get(pointer);
     }
 
-    @Override
-    public int hashCode() {
-        int result = super.hashCode();
-        result = 31 * result + (probe != null ? probe.hashCode() : 0);
-        result = 31 * result + pointer;
-        return result;
+    public LRItem move() {
+        Set<Token> probeCopy = new HashSet<>(probe);
+        return new LRItem(probeCopy, pointer + 1, production);
     }
 
-    public boolean sameKernel(Object o) {
-        return super.equals(o);
+    public boolean toEnd() { // 判断是否进入可规约状态
+        return production.getItems().size() == pointer;
     }
-
 
 }
